@@ -6,9 +6,10 @@
 #include <sys/wait.h>
 int main(void)
 {
-    char *command_argc[] = {NULL};
+    /*char *command_argc[] = {NULL};*/
     size_t number_of_char;
     char *line = NULL;
+    char *token = NULL;
     char *envp[] = {NULL};
     pid_t cpid,w;
     int    wstatus;
@@ -21,8 +22,9 @@ int main(void)
             return(0);
         }
         line[number_of_char - 1] = '\0';
-        command_argc[0] = malloc(sizeof(char)*(number_of_char));
-        strcpy(command_argc[0], line);
+	token = strtok(line, " ");
+        /*command_argc[0] = malloc(sizeof(char)*(number_of_char));
+        strcpy(command_argc[0], line);*/
         cpid = fork();
            if (cpid == -1) {
                perror("fork");
@@ -30,7 +32,7 @@ int main(void)
            }
 
            if (cpid == 0) {
- if (execve(line, command_argc, envp)==-1)
+ if (execve(token, &token, envp)==-1)
         printf("%s",line);
  perror("./hsh");
 
@@ -43,7 +45,7 @@ int main(void)
                    }
                } while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
            }
-free(command_argc[0]);
+/*free(command_argc[0]);*/
     }
       free(line);
 
