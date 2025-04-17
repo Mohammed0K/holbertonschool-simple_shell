@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
-       #include <sys/wait.h>
-int main(int argc, char *argv[], char *env[])
+#include <sys/wait.h>
+int main(void)
 {
     char *command_argc[] = {NULL};
     size_t number_of_char;
@@ -14,8 +14,8 @@ int main(int argc, char *argv[], char *env[])
     int    wstatus;
     while (1){
         printf("$");
-        number_of_char = getline(&line, &number_of_char, stdin);
-        if(number_of_char == EOF){
+	number_of_char = getline(&line, &number_of_char, stdin);
+        if( (int) number_of_char == EOF){
             return(0);
         }
         line[number_of_char - 1] = '\0';
@@ -27,12 +27,12 @@ int main(int argc, char *argv[], char *env[])
                exit(EXIT_FAILURE);
            }
 
-           if (cpid == 0) {            /* Code executed by child */
+           if (cpid == 0) {
  if (execve(line, command_argc, envp)==-1)
         printf("%s",line);
- perror("");
+ perror("./hsh");
 
-           } else {                    /* Code executed by parent */
+           } else {
                do {
                    w = waitpid(cpid, &wstatus, WUNTRACED | WCONTINUED);
                    if (w == -1) {
@@ -41,7 +41,6 @@ int main(int argc, char *argv[], char *env[])
                    }
                } while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
            }
-           //printf("\n");
     }
 
 }
