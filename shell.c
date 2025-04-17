@@ -13,7 +13,8 @@ int main(void)
     pid_t cpid,w;
     int    wstatus;
     while (1){
-        printf("$");
+	    if (isatty(STDIN_FILENO))
+	    printf("$");
 	number_of_char = getline(&line, &number_of_char, stdin);
         if( (int) number_of_char == EOF){
             return(0);
@@ -42,7 +43,7 @@ int main(void)
                } while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
            }
 free(command_argc[0]);
+     free(line);
     }
-    free(line);
 
 }
