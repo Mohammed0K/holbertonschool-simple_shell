@@ -17,6 +17,7 @@ int main(void)
 	    printf("$");
 	number_of_char = getline(&line, &number_of_char, stdin);
         if( (int) number_of_char == EOF){
+		free(line);
             return(0);
         }
         line[number_of_char - 1] = '\0';
@@ -43,7 +44,7 @@ int main(void)
                } while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
            }
 free(command_argc[0]);
-     free(line);
     }
+      free(line);
 
 }
