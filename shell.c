@@ -19,7 +19,7 @@ int main(void)
             return(0);
         }
         line[number_of_char - 1] = '\0';
-        command_argc[0] = malloc(sizeof(char)*(number_of_char-1));
+        command_argc[0] = malloc(sizeof(char)*(number_of_char));
         strcpy(command_argc[0], line);
         cpid = fork();
            if (cpid == -1) {
@@ -41,6 +41,8 @@ int main(void)
                    }
                } while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
            }
+free(command_argc[0]);
     }
+    free(line);
 
 }
