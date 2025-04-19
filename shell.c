@@ -4,49 +4,64 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+void tokenize(char *command, char **command_args)
+{
+	int i = 0;
+	
+	command_args[0] = strtok(command, " ");
+	while (command_args[i])
+	{
+		i++;
+		command_args[i] = strtok(NULL, " ");
+	}
+}
+void free_command_args(char **command_args)
+{
+	free(command_args);
+}
 int main(void)
 {
-    /*char *command_argc[] = {NULL};*/
-    size_t number_of_char;
-    char *line = NULL;
-    char *token = NULL;
-    char *envp[] = {NULL};
-    pid_t cpid,w;
-    int    wstatus;
-    while (1){
-	    if (isatty(STDIN_FILENO))
-	    printf("$");
-	number_of_char = getline(&line, &number_of_char, stdin);
-        if( (int) number_of_char == EOF){
-		free(line);
-            return(0);
-        }
-        line[number_of_char - 1] = '\0';
-	token = strtok(line, " ");
-        /*command_argc[0] = malloc(sizeof(char)*(number_of_char));
-        strcpy(command_argc[0], line);*/
-        cpid = fork();
-           if (cpid == -1) {
-               perror("fork");
-               exit(EXIT_FAILURE);
-           }
+	char **command_args;
+	size_t number_of_char;
+	char *line = NULL;
+	char *envp[] = {NULL};
+	pid_t cpid, w;
+	int wstatus;
 
-           if (cpid == 0) {
- if (execve(token, &token, envp)==-1)
-        printf("%s",line);
- perror("./hsh");
-
-           } else {
-               do {
-                   w = waitpid(cpid, &wstatus, WUNTRACED | WCONTINUED);
-                   if (w == -1) {
-                       perror("waitpid");
-                       exit(EXIT_FAILURE);
-                   }
-               } while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
-           }
-/*free(command_argc[0]);*/
-    }
-      free(line);
-
+	command_args = malloc(sizeof(char *) * 10);
+	while (1)
+	{
+		if (isatty(STDIN_FILENO))
+			printf("$");
+		number_of_char = getline(&line, &number_of_char, stdin);
+		if ((int)number_of_char == EOF)
+			break;
+		line[number_of_char - 1] = '\0';
+		tokenize(line, command_args);
+		cpid = fork();
+		if (cpid == -1)
+		{
+			perror("fork");
+			exit(EXIT_FAILURE);
+		}
+		if (cpid == 0)
+		{
+			if (command_args[0] && execve(command_args[0], command_args, envp) == -1)
+				perror("./hsh");
+		}
+		else
+		{
+			do {
+				w = waitpid(cpid, &wstatus, WUNTRACED | WCONTINUED);
+				if (w == -1)
+				{
+					perror("waitpid");
+					exit(EXIT_FAILURE);
+				}
+			} while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
+		}
+	}
+	free(line);
+	free_command_args(command_args);
+	return (0);
 }
