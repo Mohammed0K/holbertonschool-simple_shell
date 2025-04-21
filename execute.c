@@ -38,7 +38,8 @@ int execute_command(char **args, char **envp, char *program_name)
 		if (execve(command_path, args, envp) == -1)
 		{
 			handle_execution_error(args[0], program_name);
-			free(command_path);
+			if(command_path != NULL)
+				free(command_path);
 			exit(127); /* Command not found exit status */
 		}
 	}
@@ -46,10 +47,13 @@ int execute_command(char **args, char **envp, char *program_name)
 	{
 		/* Parent process */
 		waitpid(pid, &status, 0);
-		free(command_path);
 		if (WIFEXITED(status))
-			return (WEXITSTATUS(status));
+			status = WEXITSTATUS(status);
+		else
+			status = 1;
 	}
+	if(command_path != NULL)
+                                free(command_path);
 
 	return (status);
 }
