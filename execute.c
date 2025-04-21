@@ -1,0 +1,122 @@
+#include "shell.h"
+
+/**
+ * execute_command - Execute a command
+ * @args: Array of arguments
+ * @envp: Environment variables
+ *
+ * Return: 1 on success, 0 on failure
+ */
+int execute_command(char **args, char **envp)
+{
+	pid_t pid;
+	int status;
+	char *command_path;
+
+	if (args == NULL || args[0] == NULL)
+		return (0);
+
+	command_path = find_command_path(args[0], envp);
+	if (command_path == NULL)
+	{
+		handle_execution_error(args[0], args[0]);
+		return (0);
+	}
+
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		return (0);
+	}
+	else if (pid == 0)
+	{
+		/* Child process */
+		if (execve(command_path, args, envp) == -1)
+		{
+			handle_execution_error(args[0], args[0]);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		/* Parent process */
+		waitpid(pid, &status, 0);
+		free(command_path);
+	}
+
+	return (1);
+}
+
+/**
+ * find_command_path - Find the full path of a command
+ * @command: Command to find
+ * @envp: Environment variables
+ *
+ * Return: Full path of the command, or NULL if not found
+ */
+char *find_command_path(char *command, char **envp)
+{
+	char *path_env, **path_dirs, *command_path;
+	int i;
+	struct stat st;
+
+	if (command == NULL)
+		return (NULL);
+
+	/* Check if command is an absolute path */
+	if (command[0] == '/' || command[0] == '.')
+	{
+		if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
+			return (_strdup(command));
+		return (NULL);
+	}
+
+	path_env = get_path_env(envp);
+	if (path_env == NULL)
+		return (NULL);
+
+	path_dirs = split_path(path_env);
+	if (path_dirs == NULL)
+	{
+		free(path_env);
+		return (NULL);
+	}
+
+	for (i = 0; path_dirs[i] != NULL; i++)
+	{
+		command_path = build_command_path(path_dirs[i], command);
+		if (command_path == NULL)
+			continue;
+
+		if (stat(command_path, &st) == 0 && (st.st_mode & S_IXUSR))
+		{
+			free(path_env);
+			free_args(path_dirs);
+			return (command_path);
+		}
+		free(command_path);
+	}
+
+	free(path_env);
+	free_args(path_dirs);
+	return (NULL);
+}
+
+/**
+ * handle_execution_error - Handle execution errors
+ * @command: Command that failed
+ * @program_name: Name of the program
+ *
+ * Return: void
+ */
+void handle_execution_error(char *command, char *program_name)
+{
+	char error_message[BUFFER_SIZE];
+	int len;
+
+	len = snprintf(error_message, BUFFER_SIZE, "%s: 1: %s: not found\n",
+		program_name, command);
+	write(STDERR_FILENO, error_message, len);
+}
+
