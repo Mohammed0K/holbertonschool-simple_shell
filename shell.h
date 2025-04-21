@@ -39,6 +39,7 @@ int process_command(char *command, char **envp, char *program_name);
 int execute_command(char **args, char **envp, char *program_name);
 char *find_command_path(char *command, char **envp);
 void handle_execution_error(char *command, char *program_name);
+int _atoi(char *str);
 
 /* parser.c */
 char **parse_command(char *command);
