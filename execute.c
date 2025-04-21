@@ -17,11 +17,23 @@ int execute_command(char **args, char **envp, char *program_name)
 	if (args == NULL || args[0] == NULL)
 		return (0);
 
+	/* Handle built-in "exit" command before forking */
+	if (_strcmp(args[0], "exit") == 0)
+	{
+		int exit_status = 0;
+
+		if (args[1])
+			exit_status = _atoi(args[1]);
+
+		free_args(args); /* Ensure memory is freed */
+		exit(exit_status); /* Clean exit */
+	}
+
 	command_path = find_command_path(args[0], envp);
 	if (command_path == NULL)
 	{
 		handle_execution_error(args[0], program_name);
-		return (127); /* Command not found exit status */
+		return (127); /* Command not found */
 	}
 
 	/* Only fork if command exists */
@@ -38,22 +50,18 @@ int execute_command(char **args, char **envp, char *program_name)
 		if (execve(command_path, args, envp) == -1)
 		{
 			handle_execution_error(args[0], program_name);
-			if(command_path != NULL)
-				free(command_path);
-			exit(127); /* Command not found exit status */
+			free(command_path);
+			exit(127); /* Command not found */
 		}
 	}
 	else
 	{
 		/* Parent process */
 		waitpid(pid, &status, 0);
+		free(command_path);
 		if (WIFEXITED(status))
-			status = WEXITSTATUS(status);
-		else
-			status = 1;
+			return (WEXITSTATUS(status));
 	}
-	if(command_path != NULL)
-                                free(command_path);
 
 	return (status);
 }
@@ -74,7 +82,7 @@ char *find_command_path(char *command, char **envp)
 	if (command == NULL)
 		return (NULL);
 
-	/* Check if command is an absolute path */
+	/* Check if command is an absolute or relative path */
 	if (command[0] == '/' || command[0] == '.')
 	{
 		if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
@@ -85,7 +93,7 @@ char *find_command_path(char *command, char **envp)
 	path_env = get_path_env(envp);
 	if (path_env == NULL || path_env[0] == '\0')
 	{
-		free(path_env); /* Free if it was allocated but empty */
+		free(path_env);
 		return (NULL);
 	}
 
@@ -129,7 +137,6 @@ void handle_execution_error(char *command, char *program_name)
 	int len;
 
 	len = snprintf(error_message, BUFFER_SIZE, "%s: 1: %s: not found\n",
-		program_name, command);
+		       program_name, command);
 	write(STDERR_FILENO, error_message, len);
 }
-
