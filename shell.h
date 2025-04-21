@@ -31,12 +31,12 @@ typedef struct builtin_s
 
 /* Function Prototypes */
 /* main.c */
-void interactive_mode(char **envp);
-void non_interactive_mode(char **envp);
-void process_command(char *command, char **envp);
+void interactive_mode(char **envp, char *program_name, int *last_status);
+void non_interactive_mode(char **envp, char *program_name, int *last_status);
+int process_command(char *command, char **envp, char *program_name);
 
 /* execute.c */
-int execute_command(char **args, char **envp);
+int execute_command(char **args, char **envp, char *program_name);
 char *find_command_path(char *command, char **envp);
 void handle_execution_error(char *command, char *program_name);
 

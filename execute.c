@@ -4,13 +4,14 @@
  * execute_command - Execute a command
  * @args: Array of arguments
  * @envp: Environment variables
+ * @program_name: Name of the program
  *
- * Return: 1 on success, 0 on failure
+ * Return: Exit status of the command
  */
-int execute_command(char **args, char **envp)
+int execute_command(char **args, char **envp, char *program_name)
 {
 	pid_t pid;
-	int status;
+	int status = 0;
 	char *command_path;
 
 	if (args == NULL || args[0] == NULL)
@@ -19,23 +20,26 @@ int execute_command(char **args, char **envp)
 	command_path = find_command_path(args[0], envp);
 	if (command_path == NULL)
 	{
-		handle_execution_error(args[0], args[0]);
-		return (0);
+		handle_execution_error(args[0], program_name);
+		return (127); /* Command not found exit status */
 	}
 
+	/* Only fork if command exists */
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
-		return (0);
+		free(command_path);
+		return (1);
 	}
 	else if (pid == 0)
 	{
 		/* Child process */
 		if (execve(command_path, args, envp) == -1)
 		{
-			handle_execution_error(args[0], args[0]);
-			exit(EXIT_FAILURE);
+			handle_execution_error(args[0], program_name);
+			free(command_path);
+			exit(127); /* Command not found exit status */
 		}
 	}
 	else
@@ -43,9 +47,11 @@ int execute_command(char **args, char **envp)
 		/* Parent process */
 		waitpid(pid, &status, 0);
 		free(command_path);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
 	}
 
-	return (1);
+	return (status);
 }
 
 /**
@@ -73,8 +79,11 @@ char *find_command_path(char *command, char **envp)
 	}
 
 	path_env = get_path_env(envp);
-	if (path_env == NULL)
+	if (path_env == NULL || path_env[0] == '\0')
+	{
+		free(path_env); /* Free if it was allocated but empty */
 		return (NULL);
+	}
 
 	path_dirs = split_path(path_env);
 	if (path_dirs == NULL)

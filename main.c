@@ -10,24 +10,26 @@
  */
 int main(int argc, char **argv, char **envp)
 {
+	int last_status = 0;
 	(void)argc;
-	(void)argv;
 
 	if (isatty(STDIN_FILENO))
-		interactive_mode(envp);
+		interactive_mode(envp, argv[0], &last_status);
 	else
-		non_interactive_mode(envp);
+		non_interactive_mode(envp, argv[0], &last_status);
 
-	return (0);
+	return (last_status);
 }
 
 /**
  * interactive_mode - Run the shell in interactive mode
  * @envp: Environment variables
+ * @program_name: Name of the program
+ * @last_status: Pointer to the last exit status
  *
  * Return: void
  */
-void interactive_mode(char **envp)
+void interactive_mode(char **envp, char *program_name, int *last_status)
 {
 	char *command = NULL;
 	int status = 1;
@@ -44,7 +46,7 @@ void interactive_mode(char **envp)
 		}
 
 		if (_strlen(command) > 0)
-			process_command(command, envp);
+			*last_status = process_command(command, envp, program_name);
 
 		free(command);
 	}
@@ -53,17 +55,19 @@ void interactive_mode(char **envp)
 /**
  * non_interactive_mode - Run the shell in non-interactive mode
  * @envp: Environment variables
+ * @program_name: Name of the program
+ * @last_status: Pointer to the last exit status
  *
  * Return: void
  */
-void non_interactive_mode(char **envp)
+void non_interactive_mode(char **envp, char *program_name, int *last_status)
 {
 	char *command = NULL;
 
 	while ((command = read_line()) != NULL)
 	{
 		if (_strlen(command) > 0)
-			process_command(command, envp);
+			*last_status = process_command(command, envp, program_name);
 
 		free(command);
 	}
@@ -73,24 +77,27 @@ void non_interactive_mode(char **envp)
  * process_command - Process a command
  * @command: Command to process
  * @envp: Environment variables
+ * @program_name: Name of the program
  *
- * Return: void
+ * Return: Exit status of the command
  */
-void process_command(char *command, char **envp)
+int process_command(char *command, char **envp, char *program_name)
 {
 	char **args = parse_command(command);
+	int status = 0;
 
 	if (args == NULL)
-		return;
+		return (0);
 
 	if (args[0] != NULL)
 	{
 		if (is_builtin(args[0]))
-			execute_builtin(args, envp);
+			status = execute_builtin(args, envp);
 		else
-			execute_command(args, envp);
+			status = execute_command(args, envp, program_name);
 	}
 
 	free_args(args);
+	return (status);
 }
 

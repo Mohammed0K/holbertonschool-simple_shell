@@ -1,4 +1,4 @@
-#include "shell.h"
+uu#include "shell.h"
 
 /**
  * get_path_env - Get value of PATH environment variable
@@ -14,7 +14,7 @@ char *get_path_env(char **envp)
 	int prefix_len = 5;
 
 	if (envp == NULL)
-		return (NULL);
+		return (_strdup(""));
 
 	for (i = 0; envp[i] != NULL; i++)
 	{
@@ -25,7 +25,8 @@ char *get_path_env(char **envp)
 		}
 	}
 
-	return (NULL);
+	/* Return empty string if PATH is not found */
+	return (_strdup(""));
 }
 
 /**
@@ -43,6 +44,19 @@ char **split_path(char *path_env)
 
 	if (path_env == NULL)
 		return (NULL);
+
+	/* If PATH is empty, return empty array */
+	if (path_env[0] == '\0')
+	{
+		path_dirs = malloc(sizeof(char *));
+		if (path_dirs == NULL)
+		{
+			perror("malloc");
+			return (NULL);
+		}
+		path_dirs[0] = NULL;
+		return (path_dirs);
+	}
 
 	path_dirs = malloc(buffer_size * sizeof(char *));
 	if (path_dirs == NULL)
