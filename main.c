@@ -1,5 +1,7 @@
 #include "shell.h"
 
+static int last_exit_status = 0;
+
 /**
  * main - Entry point for the simple shell program
  * @argc: Argument count
@@ -32,14 +34,13 @@ int main(int argc, char **argv, char **envp)
 void interactive_mode(char **envp, char *program_name, int *last_status)
 {
 	char *command = NULL;
-	int status = 1;
 
-	while (status)
+	while (1)
 	{
 		write(STDOUT_FILENO, PROMPT, _strlen(PROMPT));
 		command = read_line();
 
-		if (command == NULL)
+		if (command == NULL) /* EOF (Ctrl+D) */
 		{
 			write(STDOUT_FILENO, "\n", 1);
 			break;
@@ -74,10 +75,10 @@ void non_interactive_mode(char **envp, char *program_name, int *last_status)
 }
 
 /**
- * process_command - Process a command
- * @command: Command to process
+ * process_command - Process a command line
+ * @command: Raw input string
  * @envp: Environment variables
- * @program_name: Name of the program
+ * @program_name: Name of the shell executable
  *
  * Return: Exit status of the command
  */
@@ -91,12 +92,11 @@ int process_command(char *command, char **envp, char *program_name)
 
 	if (args[0] != NULL)
 	{
-		/* Simple shell 0.4: catch "exit" without forking */
 		if (_strcmp(args[0], "exit") == 0)
 		{
-			free_args(args);   /* free token array */
-			free(command);     /* free raw input buffer */
-			exit(0);           /* clean exit with status 0 */
+			free_args(args);
+			free(command);
+			exit(last_exit_status);
 		}
 
 		if (is_builtin(args[0]))
@@ -106,5 +106,6 @@ int process_command(char *command, char **envp, char *program_name)
 	}
 
 	free_args(args);
+	last_exit_status = status;
 	return (status);
 }
