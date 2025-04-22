@@ -14,7 +14,7 @@
 - [📞 Contact / Support](#contact--support)
 
   
-## Description
+## Description 🔹
 
 **Simple Shell** is a basic UNIX command interpreter written in C.  
 It demonstrates core OS concepts such as process creation, system calls,  
@@ -26,7 +26,7 @@ and environment management. Features include:
 - PATH resolution for locating executables  
 - Error handling consistent with `/bin/sh`  
 
-## 🛠️ Installation
+## Installation
 
 1. Clone the repository:  
    ```bash
