@@ -91,6 +91,14 @@ int process_command(char *command, char **envp, char *program_name)
 
 	if (args[0] != NULL)
 	{
+		/* Simple shell 0.4: catch "exit" without forking */
+		if (_strcmp(args[0], "exit") == 0)
+		{
+			free_args(args);   /* free token array */
+			free(command);     /* free raw input buffer */
+			exit(0);           /* clean exit with status 0 */
+		}
+
 		if (is_builtin(args[0]))
 			status = execute_builtin(args, envp);
 		else
@@ -100,4 +108,3 @@ int process_command(char *command, char **envp, char *program_name)
 	free_args(args);
 	return (status);
 }
-
