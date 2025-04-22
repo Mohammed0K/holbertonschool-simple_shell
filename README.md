@@ -102,6 +102,6 @@ The following functions are exposed via `shell.h`:
 
 - File issues via the [GitHub issues page](https://github.com/Mohammed0K/holbertonschool-simple_shell/issues).  
 - For questions or feedback, email the maintainers:  
-  -- Bader Alamri `bader.alamri@holbertonstudents.com`
-  -- Hamad Dahash `hamad.dahash@holbertonstudents.com`
-  -- Mohammed Alqabas `mohammed.alqabas@holbertonstudents.com`
+  - Bader Alamri `bader.alamri@holbertonstudents.com`
+  - Hamad Dahash `hamad.dahash@holbertonstudents.com`
+  - Mohammed Alqabas `mohammed.alqabas@holbertonstudents.com`
