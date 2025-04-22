@@ -53,27 +53,16 @@ int execute_builtin(char **args, char **envp)
 
 /**
  * builtin_exit - Implement exit built-in command
- * @args: Array of arguments
- * @envp: Environment variables
+ * @args: Array of arguments (ignored)
+ * @envp: Environment variables (ignored)
  *
- * Return: Exit status
+ * Return: Always 0 (status)
  */
 int builtin_exit(char **args, char **envp)
 {
-	int status = 0;
+	(void)args;
 	(void)envp;
-
-	/* If there are arguments, use the first one as exit status */
-	if (args[1] != NULL)
-	{
-		status = atoi(args[1]);
-	}
-
-	/* Free memory before exiting */
-	free_args(args);
-	exit(status);
-
-	return (status); /* This line will never be reached */
+	return (0);
 }
 
 /**
@@ -99,4 +88,3 @@ int builtin_env(char **args, char **envp)
 
 	return (0);
 }
-
