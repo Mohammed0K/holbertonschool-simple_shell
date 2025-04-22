@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * parse_command - Parse a command line into an array of arguments
- * @command: Command line to parse
+ * parse_command - parse a command line into array of arguments
+ * @command: raw input string to parse
  *
- * Return: Array of arguments
+ * Return: pointer to NULL-terminated array of strings, or NULL on failure
  */
 char **parse_command(char *command)
 {
@@ -14,7 +14,9 @@ char **parse_command(char *command)
 	int buffer_size = BUFFER_SIZE;
 
 	if (command == NULL)
+	{
 		return (NULL);
+	}
 
 	args = malloc(buffer_size * sizeof(char *));
 	if (args == NULL)
@@ -54,8 +56,8 @@ char **parse_command(char *command)
 }
 
 /**
- * free_args - Free memory allocated for argument array
- * @args: Array of arguments
+ * free_args - free memory allocated for argument array
+ * @args: NULL-terminated array of argument strings
  *
  * Return: void
  */
@@ -64,11 +66,14 @@ void free_args(char **args)
 	int i;
 
 	if (args == NULL)
+	{
 		return;
+	}
 
 	for (i = 0; args[i] != NULL; i++)
+	{
 		free(args[i]);
+	}
 
 	free(args);
 }
-

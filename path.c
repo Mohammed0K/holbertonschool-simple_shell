@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * get_path_env - Get value of PATH environment variable
- * @envp: Environment variables
+ * get_path_env - get value of PATH environment variable
+ * @envp: array of environment variable strings
  *
- * Return: Value of PATH environment variable, or NULL if not found
+ * Return: allocated string containing PATH value, or empty string if not found
  */
 char *get_path_env(char **envp)
 {
@@ -14,26 +14,27 @@ char *get_path_env(char **envp)
 	int prefix_len = 5;
 
 	if (envp == NULL)
+	{
 		return (_strdup(""));
+	}
 
 	for (i = 0; envp[i] != NULL; i++)
 	{
 		if (strncmp(envp[i], path_prefix, prefix_len) == 0)
 		{
-			path_env = _strdup(envp[i] + prefix_len);
-			return (path_env);
+			return (_strdup(envp[i] + prefix_len));
 		}
 	}
 
-	/* Return empty string if PATH is not found */
+	/* return empty string if PATH not found */
 	return (_strdup(""));
 }
 
 /**
- * split_path - Split PATH into array of directories
- * @path_env: PATH environment variable value
+ * split_path - split PATH string into array of directory strings
+ * @path_env: string containing PATH environment variable value
  *
- * Return: Array of directories
+ * Return: NULL-terminated array of directory strings, or NULL on failure
  */
 char **split_path(char *path_env)
 {
@@ -43,9 +44,11 @@ char **split_path(char *path_env)
 	int buffer_size = BUFFER_SIZE;
 
 	if (path_env == NULL)
+	{
 		return (NULL);
+	}
 
-	/* If PATH is empty, return empty array */
+	/* if PATH is empty, return array with single NULL */
 	if (path_env[0] == '\0')
 	{
 		path_dirs = malloc(sizeof(char *));
@@ -76,18 +79,17 @@ char **split_path(char *path_env)
 			return (NULL);
 		}
 		i++;
-
 		if (i >= buffer_size)
 		{
 			buffer_size += BUFFER_SIZE;
-			path_dirs = realloc(path_dirs, buffer_size * sizeof(char *));
+			path_dirs = realloc(path_dirs,
+				buffer_size * sizeof(char *));
 			if (path_dirs == NULL)
 			{
 				perror("realloc");
 				return (NULL);
 			}
 		}
-
 		token = strtok(NULL, ":");
 	}
 	path_dirs[i] = NULL;
@@ -96,19 +98,22 @@ char **split_path(char *path_env)
 }
 
 /**
- * build_command_path - Build full path to command
- * @directory: Directory to check
- * @command: Command to find
+ * build_command_path - build full path for a command in directory
+ * @directory: directory path string
+ * @command: command name string
  *
- * Return: Full path to command, or NULL on failure
+ * Return: allocated string of full command path, or NULL on failure
  */
 char *build_command_path(char *directory, char *command)
 {
 	char *command_path;
-	int dir_len, cmd_len;
+	int dir_len;
+	int cmd_len;
 
 	if (directory == NULL || command == NULL)
+	{
 		return (NULL);
+	}
 
 	dir_len = _strlen(directory);
 	cmd_len = _strlen(command);
@@ -126,4 +131,3 @@ char *build_command_path(char *directory, char *command)
 
 	return (command_path);
 }
-
