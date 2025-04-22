@@ -1,0 +1,57 @@
+man_1_simple_shell
+.TH HSH 1 "April 22, 2025" "Holberton School" "User Commands"
+.SH NAME
+hsh \- a simple UNIX command line interpreter
+.SH SYNOPSIS
+.B ./hsh
+.RI [ COMMAND_FILE ]
+.SH DESCRIPTION
+Simple Shell is a command line interpreter written in C that mimics the basic functionality of standard UNIX shells such as sh or bash. It supports both interactive and non-interactive modes, built-in commands, and execution of external programs via PATH resolution.
+.SH COMPILATION
+To compile the shell:
+.B gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+.SH MODES
+The shell operates in two modes:
+.TP
+.B interactive
+Run the executable and enter commands at the prompt.
+.TP
+.B non-interactive
+Pass commands via a pipe or file:
+.RS
+echo "ls -l" \| ./hsh
+.RE
+.SH FEATURES
+- Executes external commands by searching the PATH environment variable or using explicit paths.  
+- Built-in commands:
+.TP
+.B exit [status]
+Terminate the shell with the given exit code (default 0).  
+.TP
+.B env
+Display the current environment, one variable per line.  
+- Handles errors (command not found, fork/exec failures) with appropriate exit statuses.
+.SH EXAMPLES
+Interactive mode:
+.TP
+\fB\$ ./hsh\fR
+.TP
+\fB(\$) ls -l\fR
+.TP
+\fB(\$) exit\fR
+
+Non-interactive mode:
+.TP
+\fB\$ echo "ls -l" \| ./hsh\fR
+.SH AUTHORS
+Bader Alamri <bader.alamri@holbertonstudents.com>
+.TP
+\rHamad Dahash <hamad.dahash@holbertonstudents.com>
+.TP
+\rMohammed Alqabas <mohammed.alqabas@holbertonstudents.com>
+.SH SEE ALSO
+.BR sh (1),
+.BR bash (1),
+.BR execve (2),
+.BR fork (2),
+.BR wait (2),
