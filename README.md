@@ -5,13 +5,13 @@
 
 ## Table of Contents
 
-- [🔹 Description](#🔹-description)  
-- [🛠️ Installation](#🛠️-installation)  
-- [▶️ Usage](#▶️-usage)  
-- [⚙️ Configuration](#⚙️-configuration)  
-- [🖼️ Examples](#🖼️-examples)  
-- [📑 Functions Reference](#📑-Functions-reference)    
-- [📞 Contact / Support](#📞-contact--support) 
+- [🔹 Description](#description)  
+- [🛠️ Installation](#installation)  
+- [▶️ Usage](#usage)  
+- [⚙️ Configuration](#configuration)  
+- [🖼️ Examples](#examples)  
+- [📑 Functions Reference](#Functions-reference)    
+- [📞 Contact / Support](#contact--support) 
 
 ## 🔹 Description
 
@@ -29,7 +29,7 @@ and environment management. Features include:
 
 1. Clone the repository:  
    ```bash
-   git clone https://github.com/yourusername/holbertonschool-simple_shell.git
+   git clone https://github.com/Mohammed0K/holbertonschool-simple_shell.git
    cd holbertonschool-simple_shell
    ```
 2. Compile the shell:  
@@ -101,10 +101,6 @@ The following functions are exposed via `shell.h`:
 
 - File issues via the [GitHub issues page](https://github.com/Mohammed0K/holbertonschool-simple_shell/issues).  
 - For questions or feedback, email the maintainers:  
-  - Bader Alamri <bader.alamri@holbertonstudents.com>  
-  - Hamad Dahash <hamad.dahash@holbertonstudents.com>  
-  - Mohammed Alqabas <mohammed.alqabas@holbertonstudents.com>  
-
-
-
-
+  - Bader Alamri `bader.alamri@holbertonstudents.com`
+  - Hamad Dahash `hamad.dahash@holbertonstudents.com`
+  - Mohammed Alqabas `mohammed.alqabas@holbertonstudents.com`
