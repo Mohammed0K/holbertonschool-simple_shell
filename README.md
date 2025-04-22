@@ -10,7 +10,7 @@
 - [▶️ Usage](#▶️-usage)  
 - [⚙️ Configuration](#⚙️-configuration)  
 - [🖼️ Examples](#🖼️-examples)  
-- [📑 Functions Reference](#📑-api-reference)    
+- [📑 Functions Reference](#📑-Functions-reference)    
 - [📞 Contact / Support](#📞-contact--support) 
 
 ## 🔹 Description
@@ -104,6 +104,7 @@ The following functions are exposed via `shell.h`:
   - Bader Alamri <bader.alamri@holbertonstudents.com>  
   - Hamad Dahash <hamad.dahash@holbertonstudents.com>  
   - Mohammed Alqabas <mohammed.alqabas@holbertonstudents.com>  
+
 
 
 
