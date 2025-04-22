@@ -69,7 +69,7 @@ file1.c  file2.c  README.md
 
 ## Examples
 
-![Interactive Shell Example](./images/interactive_example.png)
+- Interactive Shell Example
 
 ```bash
 $ ./hsh
