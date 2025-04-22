@@ -14,7 +14,7 @@
 - [📞 Contact / Support](#contact--support)
 
   
-## Description 🔹
+## Description 
 
 **Simple Shell** is a basic UNIX command interpreter written in C.  
 It demonstrates core OS concepts such as process creation, system calls,  
