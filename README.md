@@ -2,7 +2,6 @@
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](./)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-yellow)](./)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ## Table of Contents
 
@@ -112,8 +111,9 @@ Please follow these guidelines when contributing:
 
 ## Contact / Support
 
-- File issues via the [GitHub issues page](https://github.com/yourusername/holbertonschool-simple_shell/issues).  
+- File issues via the [GitHub issues page](https://github.com/Mohammed0K/holbertonschool-simple_shell/issues).  
 - For questions or feedback, email the maintainers:  
   - Bader Alamri <bader.alamri@holbertonstudents.com>  
   - Hamad Dahash <hamad.dahash@holbertonstudents.com>  
   - Mohammed Alqabas <mohammed.alqabas@holbertonstudents.com>  
+
