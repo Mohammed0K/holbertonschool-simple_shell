@@ -8,12 +8,13 @@
 - [🔹 Description](#description)  
 - [🛠️ Installation](#installation)  
 - [▶️ Usage](#usage)  
-- [⚙️ Configuration](#configuration)  
+- [⚙️ Configuration](#configuration)
 - [🖼️ Examples](#examples)  
-- [📑 Functions Reference](#Functions-reference)    
-- [📞 Contact / Support](#contact--support) 
+- [📑 Functions Reference](#Functions-reference)
+- [📞 Contact / Support](#contact--support)
 
-## 🔹 Description
+  
+## Description
 
 **Simple Shell** is a basic UNIX command interpreter written in C.  
 It demonstrates core OS concepts such as process creation, system calls,  
@@ -37,7 +38,7 @@ and environment management. Features include:
    gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
    ```
 
-## ▶️ Usage
+## Usage
 
 ### Interactive Mode
 
@@ -59,14 +60,14 @@ echo "/bin/ls" | ./hsh
 file1.c  file2.c  README.md
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 - **PATH**: The shell reads the `PATH` environment variable to locate  
   executables.
 - **Prompt**: Defined by `PROMPT` in `shell.h` (default: `"$ "`).  
 - No additional configuration files are required.
 
-## 🖼️ Examples
+## Examples
 
 ![Interactive Shell Example](./images/interactive_example.png)
 
@@ -78,7 +79,7 @@ PATH=/usr/local/bin:/usr/bin:/bin
 $ exit
 ```
 
-## 📑 Functions Reference
+## Functions Reference
 
 The following functions are exposed via `shell.h`:
 
@@ -97,7 +98,7 @@ The following functions are exposed via `shell.h`:
 - **Utility functions** (`_strlen`, `_strdup`, `_strcmp`, `_atoi`, etc.)
 
 
-## 📞 Contact / Support
+## Contact / Support
 
 - File issues via the [GitHub issues page](https://github.com/Mohammed0K/holbertonschool-simple_shell/issues).  
 - For questions or feedback, email the maintainers:  
