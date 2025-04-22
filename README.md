@@ -180,10 +180,12 @@ julien@ubuntu:/#
 
 ## Authors
 
-- [Author Name 1]
-- [Author Name 2]
+### Bader Alamri.
+`bader.alamri@holbertonstudents.com`
+### Hamad Dahash.
+`hamad.dahash@holbertonstudents.com`
+### Mohammed Alqabas.
+`mohammed.alqabas@holbertonstudents.com`
 
-## License
 
-This project is licensed under [License Type].
 
