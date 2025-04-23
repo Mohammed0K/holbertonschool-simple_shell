@@ -10,7 +10,6 @@
  */
 int execute_command(char **args, char **envp, char *program_name)
 {
-	pid_t pid;
 	int status;
 	char *command_path;
 

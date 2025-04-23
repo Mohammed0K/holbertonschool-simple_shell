@@ -8,7 +8,6 @@
 char *get_path_env(char **envp)
 {
 	int i;
-	char *path_env = NULL;
 	char *path_prefix = "PATH=";
 	int prefix_len = 5;
 

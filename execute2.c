@@ -1,4 +1,4 @@
-#include "main.h"
+#include "shell.h"
 /**
  * check_path - check if path exists and is executable
  * @path: path to check
