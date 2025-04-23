@@ -1,5 +1,4 @@
 #include "shell.h"
-
 /**
  * get_path_env - get value of PATH environment variable
  * @envp: array of environment variable strings
@@ -29,37 +28,23 @@ char *get_path_env(char **envp)
 	/* return empty string if PATH not found */
 	return (_strdup(""));
 }
-
 /**
- * split_path - split PATH string into array of directory strings
- * @path_env: string containing PATH environment variable value
+ * split_path - splits PATH environment variable into directories
+ * @path_env: PATH environment variable string
  *
- * Return: NULL-terminated array of directory strings, or NULL on failure
+ * Return: array of directory strings, NULL on failure
  */
 char **split_path(char *path_env)
 {
 	char **path_dirs;
-	char *token;
 	int i = 0;
 	int buffer_size = BUFFER_SIZE;
 
 	if (path_env == NULL)
-	{
 		return (NULL);
-	}
 
-	/* if PATH is empty, return array with single NULL */
 	if (path_env[0] == '\0')
-	{
-		path_dirs = malloc(sizeof(char *));
-		if (path_dirs == NULL)
-		{
-			perror("malloc");
-			return (NULL);
-		}
-		path_dirs[0] = NULL;
-		return (path_dirs);
-	}
+		return (create_empty_path_array());
 
 	path_dirs = malloc(buffer_size * sizeof(char *));
 	if (path_dirs == NULL)
@@ -67,6 +52,45 @@ char **split_path(char *path_env)
 		perror("malloc");
 		return (NULL);
 	}
+
+	i = process_path_tokens(path_dirs, path_env, buffer_size);
+	if (i < 0)
+		return (NULL);
+
+	path_dirs[i] = NULL;
+	return (path_dirs);
+}
+
+/**
+ * create_empty_path_array - creates empty path array
+ *
+ * Return: array with single NULL element, NULL on malloc failure
+ */
+char **create_empty_path_array(void)
+{
+	char **path_dirs = malloc(sizeof(char *));
+
+	if (path_dirs == NULL)
+	{
+		perror("malloc");
+		return (NULL);
+	}
+	path_dirs[0] = NULL;
+	return (path_dirs);
+}
+
+/**
+ * process_path_tokens - processes and stores path tokens
+ * @path_dirs: array to store directories
+ * @path_env: PATH environment variable
+ * @buffer_size: initial buffer size
+ *
+ * Return: final index on success, -1 on failure
+ */
+int process_path_tokens(char **path_dirs, char *path_env, int buffer_size)
+{
+	char *token;
+	int i = 0;
 
 	token = strtok(path_env, ":");
 	while (token != NULL)
@@ -76,27 +100,24 @@ char **split_path(char *path_env)
 		{
 			perror("strdup");
 			free_args(path_dirs);
-			return (NULL);
+			return (-1);
 		}
+
 		i++;
 		if (i >= buffer_size)
 		{
 			buffer_size += BUFFER_SIZE;
-			path_dirs = realloc(path_dirs,
-				buffer_size * sizeof(char *));
+			path_dirs = realloc(path_dirs, buffer_size * sizeof(char *));
 			if (path_dirs == NULL)
 			{
 				perror("realloc");
-				return (NULL);
+				return (-1);
 			}
 		}
 		token = strtok(NULL, ":");
 	}
-	path_dirs[i] = NULL;
-
-	return (path_dirs);
+	return (i);
 }
-
 /**
  * build_command_path - build full path for a command in directory
  * @directory: directory path string

@@ -14,17 +14,13 @@ char **parse_command(char *command)
 	int buffer_size = BUFFER_SIZE;
 
 	if (command == NULL)
-	{
 		return (NULL);
-	}
-
 	args = malloc(buffer_size * sizeof(char *));
 	if (args == NULL)
 	{
 		perror("malloc");
 		return (NULL);
 	}
-
 	token = strtok(command, TOKEN_DELIM);
 	while (token != NULL)
 	{
@@ -36,7 +32,6 @@ char **parse_command(char *command)
 			return (NULL);
 		}
 		i++;
-
 		if (i >= buffer_size)
 		{
 			buffer_size += BUFFER_SIZE;
@@ -47,11 +42,9 @@ char **parse_command(char *command)
 				return (NULL);
 			}
 		}
-
 		token = strtok(NULL, TOKEN_DELIM);
 	}
 	args[i] = NULL;
-
 	return (args);
 }
 

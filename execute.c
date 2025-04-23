@@ -15,22 +15,10 @@ int execute_command(char **args, char **envp, char *program_name)
 	char *command_path;
 
 	if (args == NULL || args[0] == NULL)
-	{
 		return (0);
-	}
 
-	/* handle built-in exit before forking */
-	if (_strcmp(args[0], "exit") == 0)
-	{
-		int exit_status = 0;
-
-		if (args[1] != NULL)
-		{
-			exit_status = _atoi(args[1]);
-		}
-		free_args(args);
-		exit(exit_status);
-	}
+	if (handle_builtin_exit(args))
+		return (0);
 
 	command_path = find_command_path(args[0], envp);
 	if (command_path == NULL)
@@ -39,34 +27,66 @@ int execute_command(char **args, char **envp, char *program_name)
 		return (127);
 	}
 
+	status = fork_and_execute(command_path, args, envp, program_name);
+	free(command_path);
+	return (status);
+}
+
+/**
+ * handle_builtin_exit - handle exit builtin command
+ * @args: array of argument strings
+ *
+ * Return: 1 if exit was handled, 0 otherwise
+ */
+int handle_builtin_exit(char **args)
+{
+	int exit_status = 0;
+
+	if (_strcmp(args[0], "exit") == 0)
+	{
+		if (args[1] != NULL)
+			exit_status = _atoi(args[1]);
+		free_args(args);
+		exit(exit_status);
+	}
+	return (0);
+}
+
+/**
+ * fork_and_execute - fork process and execute command
+ * @command_path: full path to command
+ * @args: array of argument strings
+ * @envp: array of environment variables
+ * @program_name: name of shell executable
+ *
+ * Return: exit status of command
+ */
+int fork_and_execute(char *command_path, char **args,
+		char **envp, char *program_name)
+{
+	pid_t pid;
+	int status;
+
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
-		free(command_path);
 		return (1);
 	}
 	else if (pid == 0)
 	{
-		/* child process */
 		if (execve(command_path, args, envp) == -1)
 		{
 			handle_execution_error(args[0], program_name);
-			free(command_path);
 			exit(127);
 		}
 	}
 	else
 	{
-		/* parent process */
 		waitpid(pid, &status, 0);
-		free(command_path);
 		if (WIFEXITED(status))
-		{
 			return (WEXITSTATUS(status));
-		}
 	}
-
 	return (status);
 }
 
@@ -80,23 +100,12 @@ int execute_command(char **args, char **envp, char *program_name)
 char *find_command_path(char *command, char **envp)
 {
 	char *path_env, **path_dirs, *command_path;
-	int i;
-	struct stat st;
 
 	if (command == NULL)
-	{
 		return (NULL);
-	}
 
-	/* check for absolute or relative path */
-	if (command[0] == '/' || command[0] == '.')
-	{
-		if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
-		{
-			return (_strdup(command));
-		}
-		return (NULL);
-	}
+	if (is_absolute_or_relative_path(command))
+		return (check_path(command));
 
 	path_env = get_path_env(envp);
 	if (path_env == NULL || path_env[0] == '\0')
@@ -106,47 +115,22 @@ char *find_command_path(char *command, char **envp)
 	}
 
 	path_dirs = split_path(path_env);
-	if (path_dirs == NULL)
-	{
-		free(path_env);
-		return (NULL);
-	}
-
-	for (i = 0; path_dirs[i] != NULL; i++)
-	{
-		command_path = build_command_path(path_dirs[i], command);
-		if (command_path == NULL)
-		{
-			continue;
-		}
-		if (stat(command_path, &st) == 0 && (st.st_mode & S_IXUSR))
-		{
-			free(path_env);
-			free_args(path_dirs);
-			return (command_path);
-		}
-		free(command_path);
-	}
-
 	free(path_env);
+	if (path_dirs == NULL)
+		return (NULL);
+
+	command_path = search_path_directories(path_dirs, command);
 	free_args(path_dirs);
-	return (NULL);
+	return (command_path);
 }
 
 /**
- * handle_execution_error - print error message for failed command
- * @command: command that failed
- * @program_name: name of the shell executable
+ * is_absolute_or_relative_path - check if command has path
+ * @command: command to check
  *
- * Return: void
+ * Return: 1 if absolute/relative path, 0 otherwise
  */
-void handle_execution_error(char *command, char *program_name)
+int is_absolute_or_relative_path(char *command)
 {
-	char error_message[BUFFER_SIZE];
-	int len;
-
-	len = snprintf(error_message, BUFFER_SIZE,
-		       "%s: 1: %s: not found\n",
-		       program_name, command);
-	write(STDERR_FILENO, error_message, len);
+	return (command[0] == '/' || command[0] == '.');
 }
